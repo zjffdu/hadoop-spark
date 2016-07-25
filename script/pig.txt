@@ -1,0 +1,10 @@
+
+
+
+
+
+
+1. Word count
+2. Top 10 word count
+3. Pig udf exercise.  Convert text to lowercase frist then do word count.
+

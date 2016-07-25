@@ -4,6 +4,7 @@ package com.tutorial.hadoop.mapred;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.Mapper;
@@ -18,13 +19,13 @@ import java.util.StringTokenizer;
 public class WordCount {
 
   public static class TokenizerMapper
-          extends Mapper<Object, Text, Text, IntWritable> {
+      extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     private final static IntWritable one = new IntWritable(1);
     private Text word = new Text();
 
-    public void map(Object key, Text value, Context context
-    ) throws IOException, InterruptedException {
+    public void map(LongWritable key, Text value, Context context)
+        throws IOException, InterruptedException {
       StringTokenizer itr = new StringTokenizer(value.toString());
       while (itr.hasMoreTokens()) {
         word.set(itr.nextToken());
@@ -34,12 +35,11 @@ public class WordCount {
   }
 
   public static class IntSumReducer
-          extends Reducer<Text, IntWritable, Text, IntWritable> {
+      extends Reducer<Text, IntWritable, Text, IntWritable> {
     private IntWritable result = new IntWritable();
 
     public void reduce(Text key, Iterable<IntWritable> values,
-                       Context context
-    ) throws IOException, InterruptedException {
+                       Context context) throws IOException, InterruptedException {
       int sum = 0;
       for (IntWritable val : values) {
         sum += val.get();
@@ -67,7 +67,7 @@ public class WordCount {
       FileInputFormat.addInputPath(job, new Path(otherArgs[i]));
     }
     FileOutputFormat.setOutputPath(job,
-            new Path(otherArgs[otherArgs.length - 1]));
+        new Path(otherArgs[otherArgs.length - 1]));
     System.exit(job.waitForCompletion(true) ? 0 : 1);
   }
 }
